@@ -1,0 +1,28 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace TaskManager.Api.Models
+{
+    public class Task : CommonObject
+    {
+        public int Id { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
+        public byte[]? File { get; set; }
+
+        public string? Column { get; set; }
+
+        // Реляционные отношения
+        public int DeskId { get; set; }
+
+        public Desk? Desk { get; set; }
+
+        public int? CreatorId { get; set; }
+
+        public User? Creator { get; set; }
+
+        public int? ExecutorId { get; set; }
+    }
+}
