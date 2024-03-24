@@ -54,8 +54,16 @@ namespace TaskManager.Api.Models.Services
 
         public ProjectModel Get(int id)
         {
-            var project =_db.Projects.FirstOrDefault(p => p.Id == id);
-            return project?.ToDto();
+            var project =_db.Projects.Include(p => p.Users).FirstOrDefault(p => p.Id == id);
+
+            var projectModel = project?.ToDto();
+
+            if (projectModel != null)
+            {
+                projectModel.UserIds = project.Users.Select(u => u.Id).ToList();
+            }
+
+            return projectModel;
         }
 
         public async Task<IEnumerable<ProjectModel>> GetByUserId(int userId)

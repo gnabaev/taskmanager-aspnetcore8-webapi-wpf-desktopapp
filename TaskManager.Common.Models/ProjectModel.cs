@@ -10,8 +10,8 @@ namespace TaskManager.Api.Models
         // Реляционные отношения
         public int? AdminId { get; set; }
 
-        public List<UserModel>? Users { get; set; } = new List<UserModel>();
+        public List<int>? UserIds { get; set; } = new List<int>();
 
-        public List<DeskModel>? Desks { get; set; } = new List<DeskModel>();
+        public List<int>? DeskIds { get; set; } = new List<int>();
     }
 }

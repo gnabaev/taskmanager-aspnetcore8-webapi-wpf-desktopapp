@@ -62,6 +62,7 @@ namespace TaskManager.Api.Controllers
                         {
                             admin = new ProjectAdmin(user);
                             _db.ProjectAdmins.Add(admin);
+                            _db.SaveChanges();
                         }
 
                         projectModel.AdminId = admin.Id;
