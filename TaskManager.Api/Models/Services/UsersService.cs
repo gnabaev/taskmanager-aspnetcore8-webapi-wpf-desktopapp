@@ -1,9 +1,10 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Models.Services
 {
-    public class UsersService
+    public class UsersService : ICommonService<UserModel>
     {
         private readonly ApplicationContext _db;
 
@@ -31,14 +32,9 @@ namespace TaskManager.Api.Models.Services
             return new Tuple<string, string>(userName, userPass);
         }
 
-        public User GetUser(string login, string password)
-        {
-            return _db.Users.FirstOrDefault(u => u.Email == login && u.Password == password);
-        }
-
         public ClaimsIdentity GetIdentity(string username, string password)
         {
-            User currentUser = GetUser(username, password);
+            User currentUser = Get(username, password);
             if (currentUser != null)
             {
                 currentUser.LastLoginDate = DateTime.Now;
@@ -58,8 +54,87 @@ namespace TaskManager.Api.Models.Services
                 return claimsIdentity;
             }
 
-            // если пользователя не найдено
             return null;
+        }
+
+        public User Get(string login, string password)
+        {
+            return _db.Users.FirstOrDefault(u => u.Email == login && u.Password == password);
+        }
+
+        public User Get(string login)
+        {
+            return _db.Users.FirstOrDefault(u => u.Email == login);
+        }
+
+        public bool Create(UserModel model)
+        {
+            try
+            {
+                var newUser = new User(model.FirstName, model.LastName, model.Email, model.Password,
+                    model.Status, model.Phone, model.Photo);
+
+                _db.Users.Add(newUser);
+                _db.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool Update(int id, UserModel model)
+        {
+            var existingUser = _db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (existingUser != null)
+            {
+                try
+                {
+                    existingUser.FirstName = model.FirstName;
+                    existingUser.LastName = model.LastName;
+                    existingUser.Email = model.Email;
+                    existingUser.Password = model.Password;
+                    existingUser.Phone = model.Phone;
+                    existingUser.Photo = model.Photo;
+                    existingUser.Status = model.Status;
+
+                    _db.Users.Update(existingUser);
+                    _db.SaveChanges();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        public bool Delete(int id)
+        {
+            var existingUser = _db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (existingUser != null)
+            {
+                try
+                {
+                    _db.Users.Remove(existingUser);
+                    _db.SaveChanges();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    return false;
+                }
+            }
+
+            return false;
         }
     }
 }

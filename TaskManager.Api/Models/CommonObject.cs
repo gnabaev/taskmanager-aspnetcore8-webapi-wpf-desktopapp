@@ -14,5 +14,13 @@
         {
             CreationDate = DateTime.Now;
         }
+
+        public CommonObject(CommonModel commonModel)
+        {
+            Name = commonModel.Name;
+            Description = commonModel.Description;
+            CreationDate = commonModel.CreationDate;
+            Photo = commonModel.Photo;
+        }
     }
 }
