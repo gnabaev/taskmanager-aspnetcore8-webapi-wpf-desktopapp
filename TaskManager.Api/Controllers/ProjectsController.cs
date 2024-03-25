@@ -24,7 +24,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProjectModel>> Get()
+        public async Task<IEnumerable<ProjectModel>> GetProjects()
         {
             var user = _usersService.Get(HttpContext.User.Identity.Name);
 
@@ -39,7 +39,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        public IActionResult GetProject(int id)
         {
             var project = _projectsService.Get(id);
 
@@ -47,7 +47,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ProjectModel projectModel)
+        public IActionResult CreateProject([FromBody] ProjectModel projectModel)
         {
             if (projectModel != null)
             {
@@ -80,7 +80,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] ProjectModel projectModel)
+        public IActionResult UpdateProject(int id, [FromBody] ProjectModel projectModel)
         {
             if (projectModel != null)
             {
@@ -147,7 +147,7 @@ namespace TaskManager.Api.Controllers
 
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteProject(int id)
         {
             bool result = _projectsService.Delete(id);
             return result ? Ok() : NotFound();

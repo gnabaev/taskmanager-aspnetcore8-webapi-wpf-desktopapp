@@ -13,6 +13,6 @@ namespace TaskManager.Api.Models
 
         public int ProjectId { get; set; }
 
-        public List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
+        public List<int> TaskIds { get; set; } = new List<int>();
     }
 }

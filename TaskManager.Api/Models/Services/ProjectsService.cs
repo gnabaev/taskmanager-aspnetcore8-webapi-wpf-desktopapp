@@ -54,13 +54,14 @@ namespace TaskManager.Api.Models.Services
 
         public ProjectModel Get(int id)
         {
-            var project =_db.Projects.Include(p => p.Users).FirstOrDefault(p => p.Id == id);
+            var project =_db.Projects.Include(p => p.Users).Include(p => p.Desks).FirstOrDefault(p => p.Id == id);
 
             var projectModel = project?.ToDto();
 
             if (projectModel != null)
             {
                 projectModel.UserIds = project.Users.Select(u => u.Id).ToList();
+                projectModel.DeskIds = project.Desks.Select(u => u.Id).ToList();
             }
 
             return projectModel;
@@ -124,7 +125,11 @@ namespace TaskManager.Api.Models.Services
             foreach (int userId in userIds)
             {
                 var user = _db.Users.FirstOrDefault(u => u.Id == userId);
-                project.Users.Add(user);
+
+                if (!project.Users.Contains(user))
+                {
+                    project.Users.Add(user);
+                }
             }
 
             _db.SaveChanges();

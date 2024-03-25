@@ -23,19 +23,19 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<UserModel>> Get()
+        public async Task<IEnumerable<UserModel>> GetUsers()
         {
             return await _db.Users.Select(u => u.ToDto()).ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public UserModel Get(int id)
+        public UserModel GetUser(int id)
         {
             return _db.Users.FirstOrDefault(u => u.Id == id).ToDto();
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] UserModel userModel)
+        public IActionResult CreateUser([FromBody] UserModel userModel)
         {
             if (userModel != null)
             {
@@ -47,7 +47,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UserModel userModel)
+        public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
         {
             if (userModel != null)
             {
@@ -59,7 +59,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult DeleteUser(int id)
         {
             bool result = _usersService.Delete(id);
             return result ? Ok() : NotFound();
