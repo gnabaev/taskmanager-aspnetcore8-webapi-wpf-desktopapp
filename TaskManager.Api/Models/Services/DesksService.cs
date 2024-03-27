@@ -77,7 +77,6 @@ namespace TaskManager.Api.Models.Services
                     existingDesk.Photo = model.Photo;
                     existingDesk.AdminId = model.AdminId;
                     existingDesk.IsPrivate = model.IsPrivate;
-                    existingDesk.ProjectId = model.ProjectId;
                     existingDesk.Columns = JsonConvert.SerializeObject(model.Columns);
 
                     _db.Desks.Update(existingDesk);

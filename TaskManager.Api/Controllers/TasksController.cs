@@ -3,70 +3,65 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Models;
 using TaskManager.Api.Models.Services;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class DesksController : ControllerBase
+    public class TasksController : ControllerBase
     {
         private readonly ApplicationContext _db;
         private readonly UsersService _usersService;
-        private readonly DesksService _desksService;
+        private readonly TasksService _tasksService;
 
-        public DesksController(ApplicationContext db)
+        public TasksController(ApplicationContext db)
         {
             _db = db;
             _usersService = new UsersService(db);
-            _desksService = new DesksService(db);
+            _tasksService = new TasksService(db);
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<DeskModel>> GetUserDesks()
+        [HttpGet()]
+        public async Task<IEnumerable<TaskModel>> GetUserTasks()
         {
             var user = _usersService.Get(HttpContext.User.Identity.Name);
 
             if (user != null)
             {
-                return await _desksService.GetAll(user.Id).ToListAsync();
+                return await _tasksService.GetAll(user.Id).ToListAsync();
             }
 
-            return Array.Empty<DeskModel>();
+            return Array.Empty<TaskModel>();
+        }
+
+        [HttpGet("desk")]
+        public async Task<IEnumerable<TaskModel>> GetTasks(int deskId)
+        {
+            return await _tasksService.GetDeskTasks(deskId).ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetDesk(int id)
+        public IActionResult GetTask(int id) 
         {
-            var desk = _desksService.Get(id);
+            var task = _tasksService.Get(id);
 
-            return desk != null ? Ok(desk) : NotFound();
-        }
-
-        [HttpGet("project")]
-        public async Task<IEnumerable<DeskModel>> GetProjectDesks(int projectId)
-        {
-            var user = _usersService.Get(HttpContext.User.Identity.Name);
-
-            if (user != null)
-            {
-                return await _desksService.GetProjectDesks(projectId, user.Id).ToListAsync();
-            }
-
-            return Array.Empty<DeskModel>();
+            return task != null ? Ok(task) : NotFound();
         }
 
         [HttpPost]
-        public IActionResult CreateDesk([FromBody] DeskModel deskModel)
+        public IActionResult CreateTask([FromBody] TaskModel taskModel)
         {
-            if (deskModel != null)
+            if (taskModel != null)
             {
                 var user = _usersService.Get(HttpContext.User.Identity.Name);
                 if (user != null)
                 {
-                    deskModel.AdminId = user.Id;
+                    taskModel.CreatorId = user.Id;
 
-                    bool result = _desksService.Create(deskModel);
+                    bool result = _tasksService.Create(taskModel);
+
                     return result ? Ok() : NotFound();
                 }
 
@@ -74,19 +69,19 @@ namespace TaskManager.Api.Controllers
             }
 
             return BadRequest();
-
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateDesk(int id, [FromBody] DeskModel deskModel)
+        public IActionResult UpdateTask(int id, [FromBody] TaskModel taskModel)
         {
-            if (deskModel != null)
+            if (taskModel != null)
             {
                 var user = _usersService.Get(HttpContext.User.Identity.Name);
 
                 if (user != null)
                 {
-                    bool result = _desksService.Update(id, deskModel);
+                    bool result = _tasksService.Update(id, taskModel);
+
                     return result ? Ok() : NotFound();
                 }
 
@@ -96,10 +91,11 @@ namespace TaskManager.Api.Controllers
             return BadRequest();
         }
 
+
         [HttpDelete("{id}")]
-        public IActionResult DeleteDesk(int id)
+        public IActionResult DeleteTask(int id)
         {
-            bool result = _desksService.Delete(id);
+            bool result = _tasksService.Delete(id);
             return result ? Ok() : NotFound();
         }
     }
