@@ -24,7 +24,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet()]
-        public async Task<IEnumerable<TaskModel>> GetUserTasks()
+        public async Task<ActionResult<IEnumerable<TaskModel>>> GetUserTasks()
         {
             var user = _usersService.Get(HttpContext.User.Identity.Name);
 
@@ -33,13 +33,14 @@ namespace TaskManager.Api.Controllers
                 return await _tasksService.GetAll(user.Id).ToListAsync();
             }
 
-            return Array.Empty<TaskModel>();
+            return Unauthorized(Array.Empty<TaskModel>());
         }
 
         [HttpGet("desk")]
-        public async Task<IEnumerable<TaskModel>> GetTasks(int deskId)
+        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasks(int deskId)
         {
-            return await _tasksService.GetDeskTasks(deskId).ToListAsync();
+            var result = await _tasksService.GetDeskTasks(deskId).ToListAsync();
+            return result == null ? NotFound(result) : Ok(result);
         }
 
         [HttpGet("{id}")]
