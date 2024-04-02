@@ -14,18 +14,22 @@ namespace TaskManager.Client.Services
     {
         private const string host = "http://localhost:39035/api/";
 
-        private string userController = host + "users";
+        private string usersControllerUrl = host + "users";
 
-        private string GetDataByUrl(string url, string userName = null, string password = null)
+        private string GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null)
         {
             string result = string.Empty;
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = "POST";
+            request.Method = method.Method;
 
             if (userName != null && password != null)
             {
                 string encoded = System.Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(userName + ":" + password));
                 request.Headers.Add("Authorization", "Basic " + encoded);
+            }
+            else if (token != null)
+            {
+                request.Headers.Add("Authorization", "Bearer " + token.access_token);
             }
 
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -81,7 +85,7 @@ namespace TaskManager.Client.Services
         public AuthToken GetToken(string userName, string password)
         {
             string url = host + "account/token";
-            var resultStr = GetDataByUrl(url, userName, password);
+            var resultStr = GetDataByUrl(HttpMethod.Post, url, null, userName, password);
             AuthToken token = JsonConvert.DeserializeObject<AuthToken>(resultStr);
             return token;
         }
@@ -89,27 +93,27 @@ namespace TaskManager.Client.Services
         public HttpStatusCode CreateUser(AuthToken token, UserModel user)
         {
             string userJson = JsonConvert.SerializeObject(user);
-            var result = SendDataByUrl(HttpMethod.Post, userController, token, userJson);
+            var result = SendDataByUrl(HttpMethod.Post, usersControllerUrl, token, userJson);
             return result;
         }
 
         public List<UserModel> GetUsers(AuthToken token)
         {
-            string response = GetDataByUrl(userController);
+            string response = GetDataByUrl(HttpMethod.Get, usersControllerUrl, token);
             List<UserModel> users = JsonConvert.DeserializeObject<List<UserModel>>(response);
             return users;
         }
 
         public HttpStatusCode DeleteUser(AuthToken token, int userId)
         {
-            var result = DeleteDataByUrl(userController + $"/{userId}", token);
+            var result = DeleteDataByUrl(usersControllerUrl + $"/{userId}", token);
             return result;
         }
 
         public HttpStatusCode UpdateUser(AuthToken token, UserModel user)
         {
             string userJson = JsonConvert.SerializeObject(user);
-            var result = SendDataByUrl(HttpMethod.Put, userController + $"/{user.Id}", token, userJson);
+            var result = SendDataByUrl(HttpMethod.Put, usersControllerUrl + $"/{user.Id}", token, userJson);
             return result;
         }
     }
