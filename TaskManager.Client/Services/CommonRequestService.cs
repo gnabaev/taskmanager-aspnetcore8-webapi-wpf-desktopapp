@@ -11,7 +11,7 @@ namespace TaskManager.Client.Services
     {
         public const string host = "http://localhost:39035/api/";
 
-        public string GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null)
+        protected string GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null)
         {
             string result = string.Empty;
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
@@ -37,7 +37,7 @@ namespace TaskManager.Client.Services
             return result;
         }
 
-        public HttpStatusCode SendDataByUrl(HttpMethod method, string url, AuthToken token, string data)
+        protected HttpStatusCode SendDataByUrl(HttpMethod method, string url, AuthToken token, string data)
         {
             HttpResponseMessage result = new HttpResponseMessage();
             HttpClient client = new HttpClient();
@@ -59,7 +59,7 @@ namespace TaskManager.Client.Services
             return result.StatusCode;
         }
 
-        public HttpStatusCode DeleteDataByUrl(string url, AuthToken token)
+        protected HttpStatusCode DeleteDataByUrl(string url, AuthToken token)
         {
             HttpResponseMessage result = new HttpResponseMessage();
             HttpClient client = new HttpClient();

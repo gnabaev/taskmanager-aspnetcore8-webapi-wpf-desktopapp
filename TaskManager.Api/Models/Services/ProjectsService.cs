@@ -102,7 +102,7 @@ namespace TaskManager.Api.Models.Services
                     existingProject.Description = model.Description;
                     existingProject.Status = model.Status;
                     existingProject.Photo = model.Photo;
-                    existingProject.AdminId = model.AdminId;
+                    //existingProject.AdminId = model.AdminId;
 
                     _db.Projects.Update(existingProject);
                     _db.SaveChanges();

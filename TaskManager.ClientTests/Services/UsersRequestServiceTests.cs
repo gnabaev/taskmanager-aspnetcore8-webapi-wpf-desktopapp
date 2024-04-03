@@ -68,7 +68,7 @@ namespace TaskManager.Client.Services.Tests
 
             var token = service.GetToken("superadmin@gmail.com", "!Qwerty123456");
 
-            var result = service.DeleteUser(token, 7);
+            var result = service.DeleteUser(token, 8);
 
             Assert.AreEqual(HttpStatusCode.OK, result);
         }
