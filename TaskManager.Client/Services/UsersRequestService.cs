@@ -10,7 +10,6 @@ namespace TaskManager.Client.Services
     {
         private string usersControllerUrl = host + "users";
 
-
         public AuthToken GetToken(string userName, string password)
         {
             string url = host + "account/token";

@@ -11,28 +11,63 @@ namespace TaskManager.Client.Services
     {
         public const string host = "http://localhost:39035/api/";
 
-        protected string GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null)
+        protected string GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null, Dictionary<string, string> parameters = null)
         {
-            string result = string.Empty;
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            request.Method = method.Method;
+            //string result = string.Empty;
+            //HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+            //request.Method = method.Method;
+
+            //if (userName != null && password != null)
+            //{
+            //    string encoded = System.Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(userName + ":" + password));
+            //    request.Headers.Add("Authorization", "Basic " + encoded);
+            //}
+            //else if (token != null)
+            //{
+            //    request.Headers.Add("Authorization", "Bearer " + token.access_token);
+            //}
+
+            //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            //using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+            //{
+            //    string responseString = reader.ReadToEnd();
+            //    result = responseString;
+            //}
+
+            //return result;
+
+            WebClient client = new WebClient();
 
             if (userName != null && password != null)
             {
                 string encoded = System.Convert.ToBase64String(Encoding.GetEncoding("ISO-8859-1").GetBytes(userName + ":" + password));
-                request.Headers.Add("Authorization", "Basic " + encoded);
+                client.Headers.Add("Authorization", "Basic " + encoded);
             }
             else if (token != null)
             {
-                request.Headers.Add("Authorization", "Bearer " + token.access_token);
+                client.Headers.Add("Authorization", "Bearer " + token.access_token);
             }
 
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+            if (parameters != null)
             {
-                string responseString = reader.ReadToEnd();
-                result = responseString;
+                foreach (var key in parameters.Keys)
+                {
+                    client.QueryString.Add(key, parameters[key]);
+                }
             }
+
+            byte[] data = Array.Empty<byte>();
+
+            if (method == HttpMethod.Post)
+            {
+                data = client.UploadValues(url, method.Method, client.QueryString);
+            }
+
+            if (method == HttpMethod.Get)
+            {
+                data = client.DownloadData(url);
+            }
+            string result = UnicodeEncoding.UTF8.GetString(data);
 
             return result;
         }
