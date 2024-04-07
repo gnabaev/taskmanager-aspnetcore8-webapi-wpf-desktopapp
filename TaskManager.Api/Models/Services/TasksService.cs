@@ -69,9 +69,7 @@
                     existingTask.EndDate = model.EndDate;
                     existingTask.File = model.File;
                     existingTask.Column = model.Column;
-                    existingTask.CreatorId = model.CreatorId;
                     existingTask.ExecutorId = model.ExecutorId;
-                    existingTask.DeskId = model.DeskId;
 
                     _db.Tasks.Update(existingTask);
                     _db.SaveChanges();
