@@ -14,5 +14,18 @@ namespace TaskManager.Api.Models
         public int ProjectId { get; set; }
 
         public List<int> TaskIds { get; set; } = new List<int>();
+
+        public DeskModel()
+        {
+
+        }
+
+        public DeskModel(string name, string description, bool isPrivate, string[] columns)
+        {
+            Name = name;
+            Description = description;
+            IsPrivate = isPrivate;
+            Columns = columns;
+        }
     }
 }
