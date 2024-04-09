@@ -25,11 +25,11 @@ namespace TaskManager.Client.Services
             return result;
         }
 
-        public List<UserModel> GetUsers(AuthToken token)
+        public UserModel GetCurrentUser(AuthToken token)
         {
-            string response = GetDataByUrl(HttpMethod.Get, usersControllerUrl, token);
-            List<UserModel> users = JsonConvert.DeserializeObject<List<UserModel>>(response);
-            return users;
+            string response = GetDataByUrl(HttpMethod.Get, host + "account/info", token);
+            UserModel user = JsonConvert.DeserializeObject<UserModel>(response);
+            return user;
         }
 
         public HttpStatusCode DeleteUser(AuthToken token, int userId)

@@ -38,7 +38,7 @@ namespace TaskManager.Client.Services.Tests
 
             var token = service.GetToken("superadmin@gmail.com", "!Qwerty123456");
 
-            var result = service.GetUsers(token);
+            var result = service.GetCurrentUser(token);
 
             Console.WriteLine(result.Count);
 
