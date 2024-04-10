@@ -32,7 +32,7 @@ namespace TaskManager.Client.Services.Tests
         }
 
         [TestMethod()]
-        public void GetUsersTest()
+        public void GetCurrentUserTest()
         {
             var service = new UsersRequestService();
 
@@ -40,9 +40,7 @@ namespace TaskManager.Client.Services.Tests
 
             var result = service.GetCurrentUser(token);
 
-            Console.WriteLine(result.Count);
-
-            Assert.AreNotEqual(Array.Empty<UserModel>(), result.ToArray());
+            Assert.IsNotNull(result);
         }
 
         [TestMethod()]
