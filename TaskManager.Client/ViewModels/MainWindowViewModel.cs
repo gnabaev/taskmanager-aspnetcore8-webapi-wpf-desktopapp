@@ -2,7 +2,9 @@
 using Prism.Commands;
 using Prism.Mvvm;
 using System.Windows;
+using System.Windows.Controls;
 using TaskManager.Client.Models;
+using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
 
 namespace TaskManager.Client.ViewModels
@@ -95,41 +97,80 @@ namespace TaskManager.Client.ViewModels
             }
         }
 
+        private string selectedPageName;
+
+        public string SelectedPageName
+        {
+            get => selectedPageName;
+
+            set
+            {
+                selectedPageName = value;
+                RaisePropertyChanged(nameof(selectedPageName));
+            }
+        }
+
+        private Page selectedPage;
+
+        public Page SelectedPage
+        {
+            get => selectedPage;
+
+            set
+            {
+                selectedPage = value;
+                RaisePropertyChanged(nameof(selectedPage));
+            }
+        }
+
         #endregion
 
         #region METHODS
         private void OpenMyProjectsPage()
         {
+            SelectedPageName = _userProjectsButtonName;
             ShowMessage(_userProjectsButtonName);
         }
         private void OpenMyDesksPage()
         {
+            SelectedPageName = _userDesksButtonName;
             ShowMessage(_userDesksButtonName);
         }
         private void OpenMyTasksPage()
         {
+            SelectedPageName = _userTasksButtonName;
             ShowMessage(_userTasksButtonName);
         }
 
         private void OpenMyInfoPage()
         {
-            ShowMessage(_userInfoButtonName);
+            var page = new UserInfoPage();
+            page.DataContext = this;
+            OpenPage(page, _userInfoButtonName);
         }
 
         private void Logout()
         {
+            SelectedPageName = _logoutButtonName;
             ShowMessage(_logoutButtonName);
         }
 
         private void OpenUsersManagement()
         {
-
+            SelectedPageName = _manageUsersButtonName;
+            ShowMessage(_manageUsersButtonName);
         }
         #endregion
 
         private void ShowMessage(string message)
         {
             MessageBox.Show(message);
+        }
+
+        private void OpenPage(Page page, string pageName)
+        {
+            SelectedPageName = pageName;
+            SelectedPage = page;
         }
     }
 }
