@@ -145,15 +145,14 @@ namespace TaskManager.Client.ViewModels
         }
         private void OpenMyTasksPage()
         {
-            SelectedPageName = _userTasksButtonName;
-            ShowMessage(_userTasksButtonName);
+            var page = new UserTasksPage();
+            OpenPage(page, _userTasksButtonName, new UserTasksPageViewModel(Token));
         }
 
         private void OpenMyInfoPage()
         {
             var page = new UserInfoPage();
-            page.DataContext = this;
-            OpenPage(page, _userInfoButtonName);
+            OpenPage(page, _userInfoButtonName, this);
         }
 
         private void Logout()
@@ -180,10 +179,11 @@ namespace TaskManager.Client.ViewModels
             MessageBox.Show(message);
         }
 
-        private void OpenPage(Page page, string pageName)
+        private void OpenPage(Page page, string pageName, BindableBase viewModel)
         {
             SelectedPageName = pageName;
             SelectedPage = page;
+            SelectedPage.DataContext = viewModel;
         }
     }
 }

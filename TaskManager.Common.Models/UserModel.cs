@@ -42,5 +42,9 @@ namespace TaskManager.Common.Models
             Status = status;
         }
 
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
+        }
     }
 }

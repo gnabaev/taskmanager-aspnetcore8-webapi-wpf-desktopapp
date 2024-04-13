@@ -29,9 +29,10 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public UserModel GetUser(int id)
+        public ActionResult<UserModel> GetUser(int id)
         {
-            return _db.Users.FirstOrDefault(u => u.Id == id).ToDto();
+            var user = _usersService.Get(id);
+            return user != null ? Ok(user) : NotFound();
         }
 
         [HttpPost]
