@@ -4,6 +4,7 @@ using Prism.Mvvm;
 using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.Models;
+using TaskManager.Client.Views;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
 
@@ -21,10 +22,11 @@ namespace TaskManager.Client.ViewModels
         public DelegateCommand OpenUsersManagementCommand;
 
         #endregion
-        public MainWindowViewModel(AuthToken token, UserModel currentUser)
+        public MainWindowViewModel(AuthToken token, UserModel currentUser, Window currentWindow = null)
         {
             Token = token;
             CurrentUser = currentUser;
+            this.currentWindow = currentWindow;
 
             OpenMyProjectsPageCommand = new DelegateCommand(OpenMyProjectsPage);
             NavigationButtons.Add(_userProjectsButtonName, OpenMyProjectsPageCommand);
@@ -46,6 +48,8 @@ namespace TaskManager.Client.ViewModels
 
             LogoutCommand = new DelegateCommand(Logout);
             NavigationButtons.Add(_logoutButtonName, LogoutCommand);
+
+            OpenMyInfoPage();
         }
 
         #region PROPERTIES
@@ -57,6 +61,9 @@ namespace TaskManager.Client.ViewModels
         private readonly string _logoutButtonName = "Logout";
 
         private readonly string _manageUsersButtonName = "Users";
+
+        private Window currentWindow;
+
 
         private UserModel currentUser;
 
@@ -151,8 +158,14 @@ namespace TaskManager.Client.ViewModels
 
         private void Logout()
         {
-            SelectedPageName = _logoutButtonName;
-            ShowMessage(_logoutButtonName);
+            var question = MessageBox.Show("Are you sure?", "Logout", MessageBoxButton.YesNo);
+
+            if (question == MessageBoxResult.Yes && currentWindow != null)
+            {
+                Login login = new Login();
+                login.Show();
+                currentWindow.Close();
+            }
         }
 
         private void OpenUsersManagement()

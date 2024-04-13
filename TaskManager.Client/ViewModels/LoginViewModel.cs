@@ -170,7 +170,7 @@ namespace TaskManager.Client.ViewModels
         private void OpenMainWindow()
         {
             MainWindow window = new MainWindow();
-            window.DataContext = new MainWindowViewModel(AuthToken, CurrentUser);
+            window.DataContext = new MainWindowViewModel(AuthToken, CurrentUser, window);
             window.Show();
             currentWindow.Close();
         }
