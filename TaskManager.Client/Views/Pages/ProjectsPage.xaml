@@ -28,16 +28,12 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource commonBorder}">
+                            <Border Style="{StaticResource projectPanelBorder}">
                                 <StackPanel Margin="10">
                                     <TextBlock Text="{Binding Path=Model.Name}" Style="{StaticResource commonTextBlock}"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Numbers: " Style="{StaticResource commonTextBlock}"/>
-                                        <TextBlock Text="{Binding Path=Model.UserIds.Count}" Style="{StaticResource commonTextBlock}"/>
-                                    </StackPanel>
                                     <Image Source="{Binding Path=Image}" Width="100" Height="100"/>
-                                    <Button Content="Open" Command="{Binding Path=DataContext.ShowProjectInfoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
-                                    <Button Content="Edit" Command="{Binding Path=DataContext.OpenUpdateProjectCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}"/>
+                                    <Button Content="Open" Command="{Binding Path=DataContext.ShowProjectInfoCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Path=Model.Id}" Style="{StaticResource commonButton}"/>
+                                    <Button Content="Edit" Command="{Binding Path=DataContext.OpenUpdateProjectCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding Path=Model.Id}" Style="{StaticResource commonButton}"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -46,6 +42,15 @@
             </ScrollViewer>
         </Grid>
         <Grid Grid.Column="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedProject.Model}" Value="{x:Null}">
+                            <Setter Property="Width" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

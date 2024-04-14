@@ -15,11 +15,11 @@ namespace TaskManager.Client.ViewModels
         private CommonViewService viewService;
 
         #region COMMANDS
-        public DelegateCommand OpenMyProjectsPageCommand;
-        public DelegateCommand OpenMyDesksPageCommand;
-        public DelegateCommand OpenMyTasksPageCommand;
-        public DelegateCommand OpenMyInfoPageCommand;
-        public DelegateCommand LogoutCommand;
+        public DelegateCommand OpenMyProjectsPageCommand { get; private set; }
+        public DelegateCommand OpenMyDesksPageCommand { get; private set; }
+        public DelegateCommand OpenMyTasksPageCommand { get; private set; }
+        public DelegateCommand OpenMyInfoPageCommand { get; private set; }
+        public DelegateCommand LogoutCommand { get; private set; }
 
         public DelegateCommand OpenUsersManagementCommand;
 

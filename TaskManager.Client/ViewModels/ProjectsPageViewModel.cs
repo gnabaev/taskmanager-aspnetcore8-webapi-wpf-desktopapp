@@ -1,5 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
+using System.Net.Http.Headers;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Common.Models;
@@ -14,9 +15,9 @@ namespace TaskManager.Client.ViewModels
         private CommonViewService viewService;
 
         #region COMMANDS
-        public DelegateCommand OpenNewProjectCommand;
-        public DelegateCommand<object> OpenUpdateProjectCommand;
-        public DelegateCommand<object> ShowProjectInfoCommand;
+        public DelegateCommand OpenNewProjectCommand { get; private set; }
+        public DelegateCommand<object> OpenUpdateProjectCommand { get; private set; }
+        public DelegateCommand<object> ShowProjectInfoCommand { get; private set; }
 
         #endregion
 
@@ -28,7 +29,7 @@ namespace TaskManager.Client.ViewModels
 
             this.token = token;
             OpenNewProjectCommand = new DelegateCommand(OpenNewProject);
-            OpenUpdateProjectCommand = new DelegateCommand<object>(UpdateProject);
+            OpenUpdateProjectCommand = new DelegateCommand<object>(OpenUpdateProject);
             ShowProjectInfoCommand = new DelegateCommand<object>(ShowProjectInfo);
         }
 
@@ -51,9 +52,13 @@ namespace TaskManager.Client.ViewModels
             {
                 selectedProject = value;
                 RaisePropertyChanged(nameof(selectedProject));
-                if (SelectedProject.Model.UserIds != null || SelectedProject.Model.UserIds.Count > 0)
+                if (SelectedProject.Model.UserIds != null && SelectedProject.Model.UserIds.Count > 0)
                 {
                     ProjectUsers = SelectedProject.Model.UserIds.Select(userId => usersRequestService.GetUser(token, userId)).ToList();
+                }
+                else
+                {
+                    ProjectUsers = new List<UserModel>();
                 }
             }
         }
@@ -79,18 +84,29 @@ namespace TaskManager.Client.ViewModels
             viewService.ShowMessage(nameof(OpenNewProject));
         }
 
-        private void UpdateProject(object param)
+        private void OpenUpdateProject(object projectId)
         {
-            var selectedProject = param as ModelClient<ProjectModel>;
-            SelectedProject = selectedProject;
-            viewService.ShowMessage(nameof(UpdateProject));
+           SelectedProject = GetProjectClienById(projectId);
         }
 
-        private void ShowProjectInfo(object param)
+        private void ShowProjectInfo(object projectId)
         {
-            var selectedProject = param as ModelClient<ProjectModel>;
-            SelectedProject = selectedProject;
-            viewService.ShowMessage(nameof(ShowProjectInfo));
+           SelectedProject = GetProjectClienById(projectId);
+        }
+
+        private ModelClient<ProjectModel> GetProjectClienById(object projectId)
+        {
+            try
+            {
+                int id = (int)projectId;
+                ProjectModel project = projectsRequestService.GetProject(token, id);
+                return new ModelClient<ProjectModel>(project);
+
+            }
+            catch (FormatException)
+            {
+                return new ModelClient<ProjectModel>(null);
+            }
         }
 
         #endregion
