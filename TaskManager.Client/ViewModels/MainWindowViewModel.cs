@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.Models;
+using TaskManager.Client.Services;
 using TaskManager.Client.Views;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
@@ -12,6 +12,8 @@ namespace TaskManager.Client.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private CommonViewService viewService;
+
         #region COMMANDS
         public DelegateCommand OpenMyProjectsPageCommand;
         public DelegateCommand OpenMyDesksPageCommand;
@@ -24,6 +26,8 @@ namespace TaskManager.Client.ViewModels
         #endregion
         public MainWindowViewModel(AuthToken token, UserModel currentUser, Window currentWindow = null)
         {
+            viewService = new CommonViewService();
+
             Token = token;
             CurrentUser = currentUser;
             this.currentWindow = currentWindow;
@@ -135,13 +139,13 @@ namespace TaskManager.Client.ViewModels
         #region METHODS
         private void OpenMyProjectsPage()
         {
-            SelectedPageName = _userProjectsButtonName;
-            ShowMessage(_userProjectsButtonName);
+            var page = new ProjectsPage();
+            OpenPage(page, _userProjectsButtonName, new ProjectsPageViewModel(Token));
         }
         private void OpenMyDesksPage()
         {
             SelectedPageName = _userDesksButtonName;
-            ShowMessage(_userDesksButtonName);
+            viewService.ShowMessage(_userDesksButtonName);
         }
         private void OpenMyTasksPage()
         {
@@ -170,14 +174,9 @@ namespace TaskManager.Client.ViewModels
         private void OpenUsersManagement()
         {
             SelectedPageName = _manageUsersButtonName;
-            ShowMessage(_manageUsersButtonName);
+            viewService.ShowMessage(_manageUsersButtonName);
         }
         #endregion
-
-        private void ShowMessage(string message)
-        {
-            MessageBox.Show(message);
-        }
 
         private void OpenPage(Page page, string pageName, BindableBase viewModel)
         {

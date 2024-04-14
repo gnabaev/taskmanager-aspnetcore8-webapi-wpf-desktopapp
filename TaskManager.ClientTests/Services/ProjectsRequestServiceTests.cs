@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
-using TaskManager.Api.Models;
 using TaskManager.Client.Models;
 using TaskManager.Common.Models;
 

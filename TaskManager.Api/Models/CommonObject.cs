@@ -1,4 +1,6 @@
-﻿namespace TaskManager.Api.Models
+﻿using TaskManager.Common.Models;
+
+namespace TaskManager.Api.Models
 {
     public class CommonObject
     {

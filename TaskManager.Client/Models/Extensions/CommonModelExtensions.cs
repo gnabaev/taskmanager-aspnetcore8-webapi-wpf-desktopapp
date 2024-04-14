@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Windows.Media.Imaging;
-using TaskManager.Api.Models;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Models.Extensions
 {

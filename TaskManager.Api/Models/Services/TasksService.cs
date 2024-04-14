@@ -1,4 +1,6 @@
-﻿namespace TaskManager.Api.Models.Services
+﻿using TaskManager.Common.Models;
+
+namespace TaskManager.Api.Models.Services
 {
     public class TasksService : ICommonService<TaskModel>
     {

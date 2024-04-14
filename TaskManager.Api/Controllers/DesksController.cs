@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Api.Models;
 using TaskManager.Api.Models.Services;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Controllers
 {

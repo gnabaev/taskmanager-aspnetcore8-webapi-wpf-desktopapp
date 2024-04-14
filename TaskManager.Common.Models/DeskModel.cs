@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace TaskManager.Api.Models
+﻿namespace TaskManager.Common.Models
 {
     public class DeskModel : CommonModel
     {

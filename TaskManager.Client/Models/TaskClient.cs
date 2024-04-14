@@ -1,5 +1,4 @@
 ﻿using System.Windows.Media.Imaging;
-using TaskManager.Api.Models;
 using TaskManager.Client.Models.Extensions;
 using TaskManager.Common.Models;
 

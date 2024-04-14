@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TaskManager.Common.Models;
-
-namespace TaskManager.Api.Models
+﻿namespace TaskManager.Common.Models
 {
     public class ProjectModel : CommonModel
     {
@@ -16,14 +13,14 @@ namespace TaskManager.Api.Models
 
         public ProjectModel()
         {
-            
+
         }
 
         public ProjectModel(string name, string description, ProjectStatus status)
         {
             Name = name;
             Description = description;
-            Status = status; 
+            Status = status;
         }
     }
 }

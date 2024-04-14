@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations.Schema;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Models
 {

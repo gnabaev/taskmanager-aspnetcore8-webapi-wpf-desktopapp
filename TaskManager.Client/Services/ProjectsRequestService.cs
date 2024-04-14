@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 using System.Net.Http;
-using TaskManager.Api.Models;
 using TaskManager.Client.Models;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Services
 {

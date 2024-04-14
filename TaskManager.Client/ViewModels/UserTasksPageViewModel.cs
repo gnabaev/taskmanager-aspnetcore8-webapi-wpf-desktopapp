@@ -1,5 +1,4 @@
 ﻿using Prism.Mvvm;
-using TaskManager.Api.Models;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 

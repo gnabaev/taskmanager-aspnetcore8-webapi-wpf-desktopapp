@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Models.Services
 {

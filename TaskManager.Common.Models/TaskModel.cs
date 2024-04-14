@@ -1,4 +1,4 @@
-﻿namespace TaskManager.Api.Models
+﻿namespace TaskManager.Common.Models
 {
     public class TaskModel : CommonModel
     {
@@ -19,7 +19,7 @@
 
         public TaskModel()
         {
-            
+
         }
 
         public TaskModel(string name, string description, DateTime startDate, DateTime endDate, string column)
