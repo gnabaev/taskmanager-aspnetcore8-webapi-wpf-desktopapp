@@ -20,7 +20,13 @@
             </Style>
         </Style.Resources>
     </Style>
-    
+
+    <Style TargetType="TextBox" x:Key="multilineTextBox" BasedOn="{StaticResource commonTextBox}">
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="MinHeight" Value="60"/>
+    </Style>
+
     <Style TargetType="PasswordBox" x:Key="commonPasswordBox">
         <Setter Property="Height" Value="20"/>
         <Setter Property="FontSize" Value="14"/>
@@ -44,6 +50,10 @@
                 <Setter Property="CornerRadius" Value="3"/>
             </Style>
         </Style.Resources>
+    </Style>
+    
+    <Style TargetType="Button" x:Key="commonButtonRed" BasedOn="{StaticResource commonButton}">
+        <Setter Property="Background" Value="{StaticResource commonRedColor}"/>
     </Style>
 
     <Style TargetType="TextBlock" x:Key="sharedTextBlock">
