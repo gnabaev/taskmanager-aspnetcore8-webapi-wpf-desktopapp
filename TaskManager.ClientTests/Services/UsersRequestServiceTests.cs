@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using TaskManager.Client.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using TaskManager.Common.Models;
 
@@ -44,6 +45,20 @@ namespace TaskManager.Client.Services.Tests
         }
 
         [TestMethod()]
+        public void GetUsersTest()
+        {
+            var service = new UsersRequestService();
+
+            var token = service.GetToken("superadmin@gmail.com", "!Qwerty123456");
+
+            var result = service.GetUsers(token);
+
+            Console.WriteLine(result.Count);
+
+            Assert.AreNotEqual(Array.Empty<UserModel>(), result.ToArray());
+        }
+
+        [TestMethod()]
         public void UpdateUserTest()
         {
             var service = new UsersRequestService();
@@ -57,7 +72,6 @@ namespace TaskManager.Client.Services.Tests
 
             Assert.AreEqual(HttpStatusCode.OK, result);
         }
-
 
         [TestMethod()]
         public void DeleteUserTest()

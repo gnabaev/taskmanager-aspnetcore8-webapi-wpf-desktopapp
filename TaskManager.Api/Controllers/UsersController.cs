@@ -7,7 +7,7 @@ using TaskManager.Common.Models;
 
 namespace TaskManager.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
@@ -36,6 +36,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateUser([FromBody] UserModel userModel)
         {
             if (userModel != null)
@@ -48,6 +49,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
         {
             if (userModel != null)
@@ -60,6 +62,7 @@ namespace TaskManager.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteUser(int id)
         {
             bool result = _usersService.Delete(id);
