@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Brush x:Key="commonBlueColor">#0696d7</Brush>
     <Brush x:Key="commonRedColor">Red</Brush>
+    <Brush x:Key="commonGreenColor">Green</Brush>
     <Brush x:Key="commonGreyColor">#FF8D8D8D</Brush>
     <FontStyle x:Key="commonFontStyle">Normal</FontStyle>
 
@@ -56,6 +57,11 @@
         <Setter Property="Background" Value="{StaticResource commonRedColor}"/>
     </Style>
 
+    <Style TargetType="Button" x:Key="commonButtonGreen" BasedOn="{StaticResource commonButton}">
+        <Setter Property="Background" Value="{StaticResource commonGreenColor}"/>
+    </Style>
+
+
     <Style TargetType="TextBlock" x:Key="sharedTextBlock">
         <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -90,12 +96,16 @@
         <Setter Property="Width" Value="200"/>
     </Style>
 
-
     <Style TargetType="Border" x:Key="projectPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
         <Setter Property="Background" Value="GhostWhite"/>
     </Style>
 
     <Style TargetType="Border" x:Key="deskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
         <Setter Property="Background" Value="#edfff2"/>
+    </Style>
+
+    <Style TargetType="CheckBox" x:Key="commonCheckBox">
+        <Setter Property="BorderBrush" Value="{StaticResource commonBlueColor}"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
 </ResourceDictionary>

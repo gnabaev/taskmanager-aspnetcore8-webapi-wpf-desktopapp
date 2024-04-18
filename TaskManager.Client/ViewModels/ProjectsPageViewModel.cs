@@ -146,7 +146,7 @@ namespace TaskManager.Client.ViewModels
 
         private void OpenUpdateProject(object projectId)
         {
-            SelectedProject = GetProjectClienById(projectId);
+            SelectedProject = GetProjectClientById(projectId);
             TypeActionWithProject = ModelClientAction.Update;
             var window = new CreateOrUpdateProjectWindow();
             viewService.OpenWindow(window, this);
@@ -154,7 +154,7 @@ namespace TaskManager.Client.ViewModels
 
         private void ShowProjectInfo(object projectId)
         {
-           SelectedProject = GetProjectClienById(projectId);
+           SelectedProject = GetProjectClientById(projectId);
         }
 
         private void CreateOrUpdateProject()
@@ -170,7 +170,7 @@ namespace TaskManager.Client.ViewModels
             UpdatePage();
         }
 
-        private ModelClient<ProjectModel> GetProjectClienById(object projectId)
+        private ModelClient<ProjectModel> GetProjectClientById(object projectId)
         {
             try
             {
