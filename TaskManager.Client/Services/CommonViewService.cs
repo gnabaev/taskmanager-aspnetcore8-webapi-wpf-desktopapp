@@ -52,7 +52,7 @@ namespace TaskManager.Client.Services
             return filePath;
         }
 
-        public void SetPhotoForObject(CommonModel model)
+        public CommonModel SetPhotoForObject(CommonModel model)
         {
             string photoPath = GetFileFromDialog(imageDialogFilterPattern);
 
@@ -61,6 +61,8 @@ namespace TaskManager.Client.Services
                 var photoBytes = File.ReadAllBytes(photoPath);
                 model.Photo = photoBytes;
             }
+
+            return model;
         }
     }
 }

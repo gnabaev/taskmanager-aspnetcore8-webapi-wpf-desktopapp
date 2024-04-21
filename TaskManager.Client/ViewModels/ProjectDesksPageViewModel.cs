@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
+using System.Windows.Documents;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
@@ -13,6 +14,7 @@ namespace TaskManager.Client.ViewModels
         private CommonViewService viewService;
         private DesksRequestService desksRequestService;
         private UsersRequestService usersRequestService;
+        private DesksViewService desksViewService;
         private AuthToken token;
         private ProjectModel project;
 
@@ -34,6 +36,7 @@ namespace TaskManager.Client.ViewModels
             viewService = new CommonViewService();
             desksRequestService = new DesksRequestService();
             usersRequestService = new UsersRequestService();
+            desksViewService = new DesksViewService(this.token, desksRequestService);
 
             UpdatePage();
 
@@ -114,19 +117,6 @@ namespace TaskManager.Client.ViewModels
 
         #region METHODS
 
-        private List<ModelClient<DeskModel>> GetDesks(int projectId)
-        {
-            var result = new List<ModelClient<DeskModel>>();
-            var desks = desksRequestService.GetProjectDesks(token, project.Id);
-            if (desks != null)
-            {
-                result = desks.Select(d => new ModelClient<DeskModel>(d)).ToList();
-
-            }
-
-            return result;
-        }
-
         private void OpenNewDesk()
         {
             SelectedDesk = new ModelClient<DeskModel>(new DeskModel());
@@ -135,12 +125,19 @@ namespace TaskManager.Client.ViewModels
             viewService.OpenWindow(window, this);
         }
 
-        private void OpenUpdateDesk(object DeskId)
+        private void OpenUpdateDesk(object deskId)
         {
-            SelectedDesk = GetDeskClientById(DeskId);
+            SelectedDesk = desksViewService.GetDeskClientById(deskId);
+
+            if (CurrentUser.Id != SelectedDesk.Model.AdminId)
+            {
+                viewService.ShowMessage("You do not have administrator rights in this project.");
+                return;
+            }
+
             TypeActionWithDesk = ModelClientAction.Update;
-            var window = new CreateOrUpdateDeskWindow();
-            viewService.OpenWindow(window, this);
+            ColumnsForNewDesk = new ObservableCollection<ColumnBindingHelper>(SelectedDesk.Model.Columns.Select(c => new ColumnBindingHelper(c)));
+            desksViewService.OpenViewDeskInfo(deskId, this);
         }
 
         private void CreateOrUpdateDesk()
@@ -166,21 +163,19 @@ namespace TaskManager.Client.ViewModels
 
         private void UpdateDesk()
         {
-            var resulAction = desksRequestService.UpdateDesk(token, SelectedDesk.Model);
-            viewService.ShowActionResult(resulAction, "Desk is updated.");
+            SelectedDesk.Model.Columns = ColumnsForNewDesk.Select(c => c.Value).ToArray();
+            desksViewService.UpdateDesk(SelectedDesk.Model);
         }
 
         private void DeleteDesk()
         {
-            var resulAction = desksRequestService.DeleteDesk(token, SelectedDesk.Model.Id);
-            viewService.ShowActionResult(resulAction, "Desk is deleted.");
+            desksViewService.DeleteDesk(SelectedDesk.Model.Id);
             UpdatePage();
         }
 
-        private void SelectPhotoForDesk()
+        public void SelectPhotoForDesk()
         {
-            viewService.SetPhotoForObject(SelectedDesk.Model);
-            SelectedDesk = new ModelClient<DeskModel>(SelectedDesk.Model);
+            SelectedDesk = desksViewService.SelectPhotoForDesk(SelectedDesk);
         }
 
         private void AddNewColumnItem()
@@ -197,23 +192,10 @@ namespace TaskManager.Client.ViewModels
         private void UpdatePage()
         {
             SelectedDesk = null;
-            ProjectDesks = GetDesks(project.Id);
+            ProjectDesks = desksViewService.GetProjectDesks(project.Id);
             viewService.CurrentOpenedWindow?.Close();
         }
 
-        private ModelClient<DeskModel> GetDeskClientById(object deskId)
-        {
-            try
-            {
-                int id = (int)deskId;
-                DeskModel desk = desksRequestService.GetDesk(token, id);
-                return new ModelClient<DeskModel>(desk);
-            }
-            catch (FormatException)
-            {
-                return new ModelClient<DeskModel>(null);
-            }
-        }
         #endregion
     }
 }
