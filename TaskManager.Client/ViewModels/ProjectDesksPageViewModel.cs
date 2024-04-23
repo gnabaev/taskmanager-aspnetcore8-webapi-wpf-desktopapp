@@ -1,7 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.ObjectModel;
-using System.Windows.Documents;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
@@ -207,10 +206,9 @@ namespace TaskManager.Client.ViewModels
             SelectedDesk = desksViewService.GetDeskClientById(deskId);
 
             var page = new DeskTasksPage();
-            var context = new DeskTasksPageViewModel(token, SelectedDesk.Model);
+            var context = new DeskTasksPageViewModel(token, SelectedDesk.Model, page);
             mainWindowViewModel.OpenPage(page, $"Tasks of {SelectedDesk.Model.Name}", context);
         }
-
         #endregion
     }
 }

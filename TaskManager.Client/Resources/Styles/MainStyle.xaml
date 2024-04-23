@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Brush x:Key="commonBlueColor">#0696d7</Brush>
+    <Brush x:Key="blueColor">#bddeff</Brush>
     <Brush x:Key="commonRedColor">Red</Brush>
     <Brush x:Key="commonGreenColor">Green</Brush>
     <Brush x:Key="commonGreyColor">#FF8D8D8D</Brush>
@@ -102,6 +103,13 @@
 
     <Style TargetType="Border" x:Key="deskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
         <Setter Property="Background" Value="#edfff2"/>
+    </Style>
+
+    <Style TargetType="Border" x:Key="taskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Background" Value="{StaticResource blueColor}"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Margin" Value="0, 10"/>
+        <Setter Property="Padding" Value="0"/>
     </Style>
 
     <Style TargetType="CheckBox" x:Key="commonCheckBox">
