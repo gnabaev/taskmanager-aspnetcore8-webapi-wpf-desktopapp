@@ -1,8 +1,10 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Commands;
+using Prism.Mvvm;
 using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
+using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Components;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
@@ -15,8 +17,16 @@ namespace TaskManager.Client.ViewModels
         private DeskModel deskModel;
         private UsersRequestService usersRequestService;
         private TasksRequestService tasksRequestService;
+        private ProjectsRequestService projectsRequestService;
         private CommonViewService viewService;
         private DeskTasksPage page;
+
+        #region COMMANDS
+        public DelegateCommand OpenNewTaskCommand { get; private set; }
+        public DelegateCommand OpenUpdateTaskCommand { get; private set; }
+        public DelegateCommand CreateOrUpdateTaskCommand { get; private set; }
+        public DelegateCommand DeleteTaskCommand { get; private set; }
+        #endregion
 
         public DeskTasksPageViewModel(AuthToken token, DeskModel deskModel, DeskTasksPage page)
         {
@@ -26,9 +36,15 @@ namespace TaskManager.Client.ViewModels
             viewService = new CommonViewService();
             usersRequestService = new UsersRequestService();
             tasksRequestService = new TasksRequestService();
+            projectsRequestService = new ProjectsRequestService();
 
             TasksByColumns = GetTasksByColumns(deskModel.Id);
             page.TasksGrid.Children.Add(CreateTasksGrid());
+
+            OpenNewTaskCommand = new DelegateCommand(OpenNewTask);
+            OpenUpdateTaskCommand = new DelegateCommand(OpenUpdateTask);
+            CreateOrUpdateTaskCommand = new DelegateCommand(CreateOrUpdateTask);
+            DeleteTaskCommand = new DelegateCommand(DeleteTask);
         }
 
         #region PROPERTIES
@@ -44,9 +60,116 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(tasksByColumns));
             }
         }
-        #endregion 
+
+        private ModelClient<TaskModel> selectedTask;
+
+        public ModelClient<TaskModel> SelectedTask
+        {
+            get => selectedTask;
+
+            set
+            {
+                selectedTask = value;
+                RaisePropertyChanged(nameof(selectedTask));
+            }
+        }
+
+        private ModelClientAction typeActionWithTask;
+
+        public ModelClientAction TypeActionWithTask
+        {
+            get => typeActionWithTask;
+
+            set
+            {
+                typeActionWithTask = value;
+                RaisePropertyChanged(nameof(typeActionWithTask));
+            }
+        }
+
+        private UserModel selectedTaskExecutor;
+
+        public UserModel SelectedTaskExecutor
+        {
+            get => selectedTaskExecutor;
+
+            set
+            {
+                selectedTaskExecutor = value;
+                RaisePropertyChanged(nameof(selectedTaskExecutor));
+            }
+        }
+
+        private ProjectModel project
+        {
+            get => projectsRequestService.GetProject(token, deskModel.ProjectId);
+        }
+
+        public List<UserModel> ProjectUsers
+        {
+            get => project.UserIds.Select(userId => usersRequestService.GetUser(token, userId)).ToList();
+        }
+
+        #endregion
 
         #region METHODS
+
+        private void OpenNewTask()
+        {
+            SelectedTask = new ModelClient<TaskModel>(new TaskModel());
+            TypeActionWithTask = ModelClientAction.Create;
+            var window = new CreateOrUpdateTaskWindow();
+            viewService.OpenWindow(window, this);
+        }
+
+        private void OpenUpdateTask()
+        {
+            TypeActionWithTask = ModelClientAction.Update;
+            var window = new CreateOrUpdateTaskWindow();
+            viewService.OpenWindow(window, this);
+        }
+
+        private void CreateOrUpdateTask()
+        {
+            if (typeActionWithTask == ModelClientAction.Create)
+            {
+                CreateTask();
+            }
+            if (typeActionWithTask == ModelClientAction.Update)
+            {
+                UpdateTask();
+            }
+            UpdatePage();
+        }
+
+        private void CreateTask()
+        {
+            SelectedTask.Model.DeskId = deskModel.Id;
+            SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
+            SelectedTask.Model.Column = deskModel.Columns.FirstOrDefault();
+            var resulAction = tasksRequestService.CreateTask(token, SelectedTask.Model);
+            viewService.ShowActionResult(resulAction, "Task is created.");
+        }
+
+        private void UpdateTask()
+        {
+            tasksRequestService.UpdateTask(token, SelectedTask.Model);
+        }
+
+        private void DeleteTask()
+        {
+            tasksRequestService.DeleteTask(token, SelectedTask.Model.Id);
+            UpdatePage();
+        }
+
+        private void UpdatePage()
+        {
+            SelectedTask = null;
+            TasksByColumns = GetTasksByColumns(deskModel.Id);
+            page.TasksGrid.Children.Add(CreateTasksGrid());
+            viewService.CurrentOpenedWindow?.Close();
+        }
+
         private Dictionary<string, List<TaskClient>> GetTasksByColumns(int deskId)
         {
             var tasksByColumns = new Dictionary<string, List<TaskClient>>();
@@ -55,7 +178,16 @@ namespace TaskManager.Client.ViewModels
 
             foreach (string column in deskModel.Columns)
             {
-                tasksByColumns.Add(column, tasks.Where(t => t.Column == column).Select(t => new TaskClient(t)).ToList());
+                tasksByColumns.Add(column, tasks.Where(t => t.Column == column).Select(t =>
+                {
+                    var taskClient = new TaskClient(t);
+                    taskClient.Creator = usersRequestService.GetCurrentUser(token);
+                    if (t.ExecutorId != null)
+                    {
+                        taskClient.Executor = usersRequestService.GetUser(token, (int)t.ExecutorId);
+                    }
+                    return taskClient;
+                }).ToList());
             }
 
             return tasksByColumns;
@@ -107,8 +239,9 @@ namespace TaskManager.Client.ViewModels
             }
 
             return grid;
-
         }
+
+
 
         #endregion
     }
