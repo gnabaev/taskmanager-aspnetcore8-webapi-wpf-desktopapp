@@ -25,6 +25,13 @@ namespace TaskManager.Client.Services
             return result;
         }
 
+        public HttpStatusCode CreateUsers(AuthToken token, List<UserModel> users)
+        {
+            string userJson = JsonConvert.SerializeObject(users);
+            var result = SendDataByUrl(HttpMethod.Post, usersControllerUrl + "/all", token, userJson);
+            return result;
+        }
+
         public UserModel GetUser(AuthToken token, int userId)
         {
             string response = GetDataByUrl(HttpMethod.Get, usersControllerUrl + $"/{userId}", token);
@@ -57,6 +64,24 @@ namespace TaskManager.Client.Services
             string userJson = JsonConvert.SerializeObject(user);
             var result = SendDataByUrl(HttpMethod.Put, usersControllerUrl + $"/{user.Id}", token, userJson);
             return result;
+        }
+
+        public int? GetProjectUserAdmin(AuthToken token, int userId)
+        {
+            var result = GetDataByUrl(HttpMethod.Get, usersControllerUrl + $"/{userId}/admin", token);
+
+            int adminId;
+
+            bool parseResult = int.TryParse(result, out adminId);
+
+            if (parseResult)
+            {
+                return adminId;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using TaskManager.Client.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
 using TaskManager.Common.Models;
 
@@ -83,6 +82,17 @@ namespace TaskManager.Client.Services.Tests
             var result = service.DeleteUser(token, 8);
 
             Assert.AreEqual(HttpStatusCode.OK, result);
+        }
+
+        [TestMethod()]
+        public void GetProjectUserAdminTest()
+        {
+            var service = new UsersRequestService();
+            var token = service.GetToken("superadmin@gmail.com", "!Qwerty123456");
+
+            var id = service.GetProjectUserAdmin(token, 1);
+
+            Assert.AreEqual(3, id);
         }
     }
 }

@@ -147,9 +147,17 @@ namespace TaskManager.Client.ViewModels
         private void OpenUpdateProject(object projectId)
         {
             SelectedProject = GetProjectClientById(projectId);
-            TypeActionWithProject = ModelClientAction.Update;
-            var window = new CreateOrUpdateProjectWindow();
-            viewService.OpenWindow(window, this);
+            var adminId = usersRequestService.GetProjectUserAdmin(token, CurrentUser.Id);
+            if (adminId == SelectedProject.Model.AdminId)
+            {
+                TypeActionWithProject = ModelClientAction.Update;
+                var window = new CreateOrUpdateProjectWindow();
+                viewService.OpenWindow(window, this);
+            }
+            else
+            {
+                viewService.ShowMessage("You are not admin.");
+            }
         }
 
         private void ShowProjectInfo(object projectId)

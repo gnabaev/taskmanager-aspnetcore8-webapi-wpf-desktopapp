@@ -48,6 +48,18 @@ namespace TaskManager.Api.Controllers
             return BadRequest();
         }
 
+        [HttpPost("all")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateUsers([FromBody] List<UserModel> userModels)
+        {
+            if (userModels != null && userModels.Count > 0)
+            {
+                bool result = _usersService.CreateUsers(userModels);
+                return result ? Ok() : NotFound();
+            }
+            return BadRequest();
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
         public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
@@ -67,6 +79,13 @@ namespace TaskManager.Api.Controllers
         {
             bool result = _usersService.Delete(id);
             return result ? Ok() : NotFound();
+        }
+
+        [HttpGet("{id}/admin")]
+        public ActionResult<int?> GetProjectAdminId(int id)
+        {
+            var admin = _usersService.GetProjectAdmin(id);
+            return admin != null ? Ok(admin.Id) : NotFound(null);
         }
     }
 }

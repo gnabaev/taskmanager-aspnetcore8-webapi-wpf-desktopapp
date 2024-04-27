@@ -85,6 +85,22 @@ namespace TaskManager.Api.Models.Services
             }
         }
 
+        public bool CreateUsers(List<UserModel> userModels)
+        {
+            try
+            {
+                var newUsers = userModels.Select(u => new User(u));
+                _db.Users.AddRange(newUsers);
+                _db.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool Update(int id, UserModel model)
         {
             var existingUser = _db.Users.FirstOrDefault(u => u.Id == id);
@@ -150,6 +166,12 @@ namespace TaskManager.Api.Models.Services
                 var user = _db.Users.FirstOrDefault(u => u.Id == id).ToDto();
                 yield return user;
             }
+        }
+
+        public ProjectAdmin GetProjectAdmin(int userId)
+        {
+            var admin = _db.ProjectAdmins.FirstOrDefault(a => a.UserId == userId);
+            return admin;
         }
     }
 }

@@ -174,9 +174,9 @@ namespace TaskManager.Client.ViewModels
         private void OpenUsersManagement()
         {
             SelectedPageName = _manageUsersButtonName;
-            viewService.ShowMessage(_manageUsersButtonName);
+            var page = new UsersPage();
+            OpenPage(page, _manageUsersButtonName, new UsersPageViewModel(Token));
         }
-        #endregion
 
         public void OpenPage(Page page, string pageName, BindableBase viewModel)
         {
@@ -184,5 +184,6 @@ namespace TaskManager.Client.ViewModels
             SelectedPage = page;
             SelectedPage.DataContext = viewModel;
         }
+        #endregion
     }
 }
