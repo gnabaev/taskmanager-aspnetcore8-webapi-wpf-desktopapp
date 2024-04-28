@@ -14,6 +14,7 @@ namespace TaskManager.Api.Controllers
     {
         private readonly ApplicationContext _db;
         private readonly UsersService _usersService;
+        private readonly int _workTimeMinutes = 10;
 
         public AccountController(ApplicationContext db)
         {
@@ -21,6 +22,7 @@ namespace TaskManager.Api.Controllers
             _usersService = new UsersService(db);
         }
 
+        [Authorize]
         [HttpGet("info")]
         public IActionResult GetCurrentUserInfo()
         {
@@ -33,6 +35,13 @@ namespace TaskManager.Api.Controllers
             }
 
             return NotFound();
+        }
+
+        [Authorize]
+        [HttpGet("workTime")]
+        public int GetWorkTimeInfo()
+        {
+            return _workTimeMinutes;
         }
 
         [HttpPost("token")]
@@ -54,7 +63,7 @@ namespace TaskManager.Api.Controllers
                 audience: AuthOptions.AUDIENCE,
                 notBefore: now,
                 claims: identity.Claims,
-                expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                expires: now.Add(TimeSpan.FromMinutes(_workTimeMinutes)),
                 signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 

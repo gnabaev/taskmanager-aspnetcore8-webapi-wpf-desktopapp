@@ -14,7 +14,7 @@ namespace TaskManager.Client.ViewModels
 {
     public class LoginViewModel : BindableBase
     {
-        UsersRequestService usersRequestService;
+        private UsersRequestService usersRequestService;
 
         #region COMMANDS
         public DelegateCommand<object> GetUserFromDbCommand { get; private set; }
@@ -169,10 +169,14 @@ namespace TaskManager.Client.ViewModels
 
         private void OpenMainWindow()
         {
-            MainWindow window = new MainWindow();
-            window.DataContext = new MainWindowViewModel(AuthToken, CurrentUser, window);
-            window.Show();
-            currentWindow.Close();
+            int workTime = usersRequestService.GetWorkTimeMinutes(AuthToken);
+            if (workTime > 0)
+            {
+                MainWindow window = new MainWindow();
+                window.DataContext = new MainWindowViewModel(AuthToken, CurrentUser, window);
+                window.Show();
+                currentWindow.Close();
+            }
         }
 
         #endregion
